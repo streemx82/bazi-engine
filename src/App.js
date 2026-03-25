@@ -132,9 +132,19 @@ export default function App() {
           margin: "0 auto"
         }}
       >
-        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-          🔮 BaZi Engine
-        </h2>
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <h2 style={{ margin: 0 }}>
+            ✨ Aura Luck
+          </h2>
+
+          <div style={{
+            marginTop: "6px",
+            fontSize: "13px",
+            color: "#c9c9c9"
+          }}>
+            Align your timing. Enhance your fortune.
+          </div>
+        </div>
 
         <label>Select Day Master:</label>
         <br />
@@ -175,7 +185,7 @@ export default function App() {
             cursor: "pointer"
           }}
         >
-          Generate Numbers
+          Generate Lucky Numbers
         </button>
 
         <div
