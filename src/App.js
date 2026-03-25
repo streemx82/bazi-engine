@@ -91,9 +91,9 @@ export default function App() {
 
     const patternScore = analyzePatterns(generated.map((g) => g.num));
 
-    let signalText = "⚠️ SKIP DAY";
-    if (patternScore >= 2) signalText = "🔥 STRONG PLAY DAY";
-    else if (patternScore === 1) signalText = "⚖️ MODERATE";
+    let signalText = "⚠️ SKIP DAY ⚠️";
+    if (patternScore >= 2) signalText = "🔥 STRONG PLAY DAY 🔥";
+    else if (patternScore === 1) signalText = "⚖️ MODERATE ⚖️";
 
     const highCount = generated.filter((g) => g.level === "high").length;
 
