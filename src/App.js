@@ -181,8 +181,9 @@ async function calculateDayMaster() {
       localStorage.setItem("dayMaster", element);
 
       setCalculatedResult(
-        `Your Day Master is ${polarity} ${element.charAt(0).toUpperCase() + element.slice(1)} (${stem}).`
+        `Your Day Master is ${polarity} ${element.charAt(0).toUpperCase() + element.slice(1)} (${stem}). Your number generation will now use this profile automatically.`
       );
+      setMode("manual");
     } catch (error) {
       setCalculatedResult(
         "Unable to calculate Day Master right now. Please check your inputs and API setup."
@@ -410,17 +411,52 @@ async function calculateDayMaster() {
               </div>
         )}
 
+        <div
+          style={{
+            background: "#141414",
+            padding: "14px",
+            borderRadius: "12px",
+            marginBottom: "15px",
+            border: "1px solid #222"
+          }}
+        >
+          <div
+            style={{
+              fontSize: "12px",
+              color: "#c9a227",
+              marginBottom: "6px",
+              letterSpacing: "0.5px"
+            }}
+          >
+            ACTIVE PROFILE
+          </div>
+          <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+            {dayMaster.charAt(0).toUpperCase() + dayMaster.slice(1)} Day Master
+          </div>
+        </div>
+
         {calculatedResult && (
           <div
             style={{
               marginTop: "12px",
-              padding: "12px",
+              padding: "14px",
               background: "#1d1d1d",
-              borderRadius: "10px",
+              borderRadius: "12px",
               fontSize: "14px",
-              lineHeight: "1.5"
+              lineHeight: "1.6",
+              border: "1px solid rgba(201,162,39,0.25)"
             }}
           >
+            <div
+              style={{
+                fontSize: "12px",
+                color: "#c9a227",
+                marginBottom: "6px",
+                letterSpacing: "0.5px"
+              }}
+            >
+              PROFILE RESULT
+            </div>
             {calculatedResult}
           </div>
         )}
