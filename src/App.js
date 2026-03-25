@@ -5,8 +5,15 @@ export default function App() {
     localStorage.getItem("dayMaster") || "wood"
   );
   const [results, setResults] = useState([]);
+  const [mode, setMode] = useState("manual");
   const [signal, setSignal] = useState("");
   const [insight, setInsight] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [birthTime, setBirthTime] = useState("");
+  const [city, setCity] = useState("");
+  const [sex, setSex] = useState("M");
+  const [calculatedResult, setCalculatedResult] = useState("");
+  const [isCalculating, setIsCalculating] = useState(false);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -116,6 +123,76 @@ export default function App() {
     setInsight(insightText);
   }
 
+async function calculateDayMaster() {
+    if (!birthDate) {
+      setCalculatedResult("Please enter your birth date first.");
+      return;
+    }
+
+    if (!birthTime) {
+      setCalculatedResult("Please enter your birth time.");
+      return;
+    }
+
+    if (!city.trim()) {
+      setCalculatedResult("Please enter your city of birth.");
+      return;
+    }
+
+    try {
+      setIsCalculating(true);
+      setCalculatedResult("");
+
+      const [year, month, day] = birthDate.split("-").map(Number);
+      const [hour, minute] = birthTime.split(":").map(Number);
+
+      const response = await fetch("/api/bazi", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          year,
+          month,
+          day,
+          hour,
+          minute,
+          city: city.trim(),
+          sex,
+          time_standard: "civil"
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Failed to calculate Day Master");
+      }
+
+      const element = data?.day_master?.info?.element?.toLowerCase();
+      const polarity = data?.day_master?.info?.polarity;
+      const stem = data?.day_master?.stem;
+
+      if (!element) {
+        throw new Error("Day Master not found in response.");
+      }
+
+      setDayMaster(element);
+      localStorage.setItem("dayMaster", element);
+
+      setCalculatedResult(
+        `Your Day Master is ${polarity} ${element.charAt(0).toUpperCase() + element.slice(1)} (${stem}).`
+      );
+    } catch (error) {
+      setCalculatedResult(
+        "Unable to calculate Day Master right now. Please check your inputs and API setup."
+      );
+      console.error(error);
+    } finally {
+      setIsCalculating(false);
+    }
+  }
+
   return (
     <div
       style={{
@@ -158,31 +235,195 @@ export default function App() {
           </div>
         </div>
 
-        <label>Select Day Master:</label>
-        <br />
+        <div style={{
+          background: "#141414",
+          padding: "15px",
+          borderRadius: "12px",
+          marginBottom: "15px"
+        }}>
+          <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
+            Choose Mode
+          </div>
 
-        <select
-          value={dayMaster}
-          onChange={(e) => {
-            setDayMaster(e.target.value);
-            localStorage.setItem("dayMaster", e.target.value);
-          }}
-          style={{
-            padding: "12px",
-            width: "100%",
-            borderRadius: "10px",
-            background: "#1a1a1a",
-            color: "white",
-            border: "1px solid #333",
-            marginTop: "10px"
-          }}
-        >
-          <option value="wood">Wood (甲 / 乙)</option>
-          <option value="fire">Fire (丙 / 丁)</option>
-          <option value="earth">Earth (戊 / 己)</option>
-          <option value="metal">Metal (庚 / 辛)</option>
-          <option value="water">Water (壬 / 癸)</option>
-        </select>
+          <button
+            onClick={() => setMode("manual")}
+            style={{
+              width: "48%",
+              marginRight: "4%",
+              padding: "10px",
+              borderRadius: "10px",
+              border: "none",
+              background: mode === "manual" ? "gold" : "#333",
+              color: mode === "manual" ? "#111" : "white",
+              fontWeight: "bold"
+            }}
+          >
+            I Know My Day Master
+          </button>
+
+          <button
+            onClick={() => setMode("finder")}
+            style={{
+              width: "48%",
+              padding: "10px",
+              borderRadius: "10px",
+              border: "none",
+              background: mode === "finder" ? "gold" : "#333",
+              color: mode === "finder" ? "#111" : "white",
+              fontWeight: "bold"
+            }}
+          >
+            Find My Day Master
+          </button>
+        </div>
+
+      {mode === "manual" && (
+          <div>
+            <label>Select Day Master:</label>
+            <br />
+
+            <select
+              value={dayMaster}
+              onChange={(e) => {
+                setDayMaster(e.target.value);
+                localStorage.setItem("dayMaster", e.target.value);
+              }}
+              style={{
+                padding: "12px",
+                width: "100%",
+                borderRadius: "10px",
+                background: "#1a1a1a",
+                color: "white",
+                border: "1px solid #333",
+                marginTop: "10px"
+              }}
+            >
+              <option value="wood">Wood (甲 / 乙)</option>
+              <option value="fire">Fire (丙 / 丁)</option>
+              <option value="earth">Earth (戊 / 己)</option>
+              <option value="metal">Metal (庚 / 辛)</option>
+              <option value="water">Water (壬 / 癸)</option>
+            </select>
+          </div>
+        )}
+
+        {mode === "finder" && (
+              <div style={{
+                background: "#141414",
+                padding: "15px",
+                borderRadius: "12px",
+                marginBottom: "15px"
+              }}>
+                <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
+                  Find My Day Master
+                </div>
+
+                <label>Date of Birth</label>
+                <input
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    marginTop: "8px",
+                    marginBottom: "12px",
+                    borderRadius: "10px",
+                    border: "1px solid #333",
+                    background: "#1a1a1a",
+                    color: "white",
+                    boxSizing: "border-box"
+                  }}
+                />
+
+                <label>Time of Birth</label>
+                <input
+                  type="time"
+                  value={birthTime}
+                  onChange={(e) => setBirthTime(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    marginTop: "8px",
+                    marginBottom: "12px",
+                    borderRadius: "10px",
+                    border: "1px solid #333",
+                    background: "#1a1a1a",
+                    color: "white",
+                    boxSizing: "border-box"
+                  }}
+                />
+
+                <label>City of Birth</label>
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="e.g. Kuala Lumpur"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    marginTop: "8px",
+                    marginBottom: "12px",
+                    borderRadius: "10px",
+                    border: "1px solid #333",
+                    background: "#1a1a1a",
+                    color: "white",
+                    boxSizing: "border-box"
+                  }}
+                />
+
+                <label>Sex</label>
+                <select
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    marginTop: "8px",
+                    marginBottom: "12px",
+                    borderRadius: "10px",
+                    border: "1px solid #333",
+                    background: "#1a1a1a",
+                    color: "white",
+                    boxSizing: "border-box"
+                  }}
+                >
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+
+                <button
+                  onClick={calculateDayMaster}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "gold",
+                    color: "#111",
+                    fontWeight: "bold"
+                  }}
+                >
+                  {isCalculating ? "Calculating..." : "Calculate My Day Master"}
+                </button>
+              </div>
+        )}
+
+        {calculatedResult && (
+          <div
+            style={{
+              marginTop: "12px",
+              padding: "12px",
+              background: "#1d1d1d",
+              borderRadius: "10px",
+              fontSize: "14px",
+              lineHeight: "1.5"
+            }}
+          >
+            {calculatedResult}
+          </div>
+        )}
 
         <button
           onClick={generate}
