@@ -136,6 +136,12 @@ export default function App() {
     setSignal(signalText);
     setInsight(insightText);
 
+    setTimeout(() => {
+      if (!isPro) {
+        setInsight("Try another batch to refine your alignment today.");
+      }
+    }, 3000);
+
     if (!isPro) {
       const newCount = usageCount + 1;
       setUsageCount(newCount);
@@ -549,12 +555,21 @@ async function calculateDayMaster() {
             "#4a1f26",
           border: "1px solid rgba(255,255,255,0.08)"
         }}>
+
           <div style={{
             fontSize: "11px",
             opacity: 0.7,
             marginBottom: "6px"
           }}>
             TODAY'S SIGNAL
+          </div>
+
+          <div style={{
+            fontSize: "11px",
+            opacity: 0.6,
+            marginTop: "4px"
+          }}>
+            Energy shifts daily
           </div>
 
           <div style={{
@@ -575,7 +590,7 @@ async function calculateDayMaster() {
             lineHeight: "1.5"
           }}
         >
-          {insight || "Generate a batch to see today's insight."}
+          {insight || "Today's energy is forming. Generate your numbers to align with the strongest timing."}
         </p>
 
         {results.map((r, i) => (
@@ -610,7 +625,7 @@ async function calculateDayMaster() {
                   opacity: 0.7,
                   marginTop: "3px"
                 }}>
-                  Based on element alignment
+                  Aligned with today's strongest energy
                 </div>
               </div>
 
