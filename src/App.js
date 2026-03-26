@@ -124,7 +124,7 @@ export default function App() {
         "Favorable alignment detected. Strong pattern clustering and wealth element support indicate higher probability today.";
     } else if (signalText.includes("MODERATE")) {
       insightText =
-        "Partial alignment observed. Some wealth signals are present but not dominant. Consider controlled play.";
+        "Stable alignment observed. Some wealth signals are present but not dominant. Consider controlled play.";
     } else {
       insightText =
         "Weak pattern structure detected. Low alignment with wealth element. Better to conserve capital today.";
@@ -220,6 +220,12 @@ async function calculateDayMaster() {
     }
   }
 
+  function getLevelLabel(level) {
+    if (level === "high") return "🔥 Peak Alignment";
+    if (level === "medium") return "⚖️ Stable Alignment";
+    return "🌑 Weak Alignment";
+  }
+
   return (
     <div
       style={{
@@ -243,7 +249,7 @@ async function calculateDayMaster() {
             letterSpacing: "1.5px",
             marginBottom: "6px"
           }}>
-            FORTUNE WEALTH SYSTEM
+            AURA FORTUNE SYSTEM
           </div>
 
           <h2 style={{
@@ -576,7 +582,11 @@ async function calculateDayMaster() {
             fontSize: "20px",
             fontWeight: "bold"
           }}>
-            {signal}
+            {signal.includes("STRONG")
+              ? "🔥 Peak Alignment Day"
+              : signal.includes("MODERATE")
+              ? "⚖️ Stable Flow Day"
+              : "🌑 Low Alignment Day"}
           </div>
         </div>
 
@@ -636,7 +646,7 @@ async function calculateDayMaster() {
                 borderRadius: "999px",
                 background: "rgba(255,255,255,0.1)"
               }}>
-                {r.level.toUpperCase()}
+                {getLevelLabel(r.level)}
               </div>
             </div>
           ))}
