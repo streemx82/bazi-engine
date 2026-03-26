@@ -19,6 +19,7 @@ export default function App() {
   Number(localStorage.getItem("usageCount")) || 0);
   const [showPricing, setShowPricing] = useState(false);
   const [auraScore, setAuraScore] = useState(null);
+  const [luckyHours, setLuckyHours] = useState([]);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -127,6 +128,16 @@ export default function App() {
       score = Math.floor(Math.random() * 20) + 30; // 30–49
     }
 
+    let hours = [];
+
+    if (signalText.includes("STRONG")) {
+      hours = ["09:00 – 11:00", "13:00 – 15:00", "19:00 – 21:00"];
+    } else if (signalText.includes("MODERATE")) {
+      hours = ["11:00 – 13:00", "17:00 – 19:00"];
+    } else {
+      hours = ["15:00 – 17:00"];
+    }
+
     const highCount = generated.filter((g) => g.level === "high").length;
 
     let insightText = "";
@@ -147,6 +158,7 @@ export default function App() {
     setSignal(signalText);
     setInsight(insightText);
     setAuraScore(score);
+    setLuckyHours(hours);
 
     setTimeout(() => {
       if (!isPro) {
@@ -287,9 +299,7 @@ async function calculateDayMaster() {
             borderRadius: "12px",
             marginBottom: "15px",
             border: "1px solid #222",
-            display: "block",
-            /*justifyContent: "space-between",
-            alignItems: "center"*/
+            display: "block"
           }}
         >
 
@@ -628,6 +638,34 @@ async function calculateDayMaster() {
           }}>
             Aura Core™ Score
           </div>
+
+          {luckyHours.length > 0 && (
+            <div style={{
+              marginTop: "14px",
+              padding: "12px",
+              background: "#1a1a1a",
+              borderRadius: "10px",
+              border: "1px solid rgba(255,255,255,0.08)"
+            }}>
+              <div style={{
+                fontSize: "11px",
+                opacity: 0.7,
+                marginBottom: "6px"
+              }}>
+                ⏰ LUCKY WINDOWS
+              </div>
+
+              {luckyHours.map((h, i) => (
+                <div key={i} style={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  marginTop: "2px"
+                }}>
+                  {h}
+                </div>
+              ))}
+            </div>
+          )}
 
           <div style={{
             fontSize: "11px",
