@@ -18,6 +18,7 @@ export default function App() {
   const [usageCount, setUsageCount] = useState(
   Number(localStorage.getItem("usageCount")) || 0);
   const [showPricing, setShowPricing] = useState(false);
+  const [auraScore, setAuraScore] = useState(null);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -116,6 +117,16 @@ export default function App() {
     if (patternScore >= 2) signalText = "🔥 STRONG PLAY DAY 🔥";
     else if (patternScore === 1) signalText = "⚖️ MODERATE ⚖️";
 
+    let score;
+
+    if (signalText.includes("STRONG")) {
+      score = Math.floor(Math.random() * 15) + 85; // 85–99
+    } else if (signalText.includes("MODERATE")) {
+      score = Math.floor(Math.random() * 20) + 60; // 60–79
+    } else {
+      score = Math.floor(Math.random() * 20) + 30; // 30–49
+    }
+
     const highCount = generated.filter((g) => g.level === "high").length;
 
     let insightText = "";
@@ -135,6 +146,7 @@ export default function App() {
     setResults(generated.slice(0, isPro ? 10 : 5));
     setSignal(signalText);
     setInsight(insightText);
+    setAuraScore(score);
 
     setTimeout(() => {
       if (!isPro) {
@@ -596,6 +608,25 @@ async function calculateDayMaster() {
               : signal.includes("MODERATE")
               ? "⚖️ Stable Flow Day ⚖️"
               : "🌑 Low Alignment Day 🌑"}
+          </div>
+
+          {auraScore !== null && (
+            <div style={{
+              marginTop: "10px",
+              fontSize: "22px",
+              fontWeight: "bold",
+              color: "#f3d36b"
+            }}>
+              {auraScore} / 100
+            </div>
+          )}
+
+          <div style={{
+            fontSize: "11px",
+            opacity: 0.6,
+            marginTop: "4px"
+          }}>
+            Aura Core™ Score
           </div>
 
           <div style={{
