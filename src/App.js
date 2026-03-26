@@ -65,8 +65,13 @@ export default function App() {
     const supportDigits = getSupportDigits(dayMaster);
     const generated = [];
 
+    if (!isPro && usageCount === 2) {
+      setInsight("You're on your last free use. Consider upgrading to PRO.");
+    }
+
     if (!isPro && usageCount >= 3) {
       setInsight("Free limit reached. Upgrade to PRO for unlimited access.");
+      setShowPricing(true); // 🔥 AUTO TRIGGER
       return;
     }
 
@@ -731,7 +736,7 @@ async function calculateDayMaster() {
                   textAlign: "center"
                 }}
               >
-                Choose Your Access
+                🔥 Unlock Your Full Fortune Access 🔥
               </div>
 
               <div
