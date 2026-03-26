@@ -15,6 +15,8 @@ export default function App() {
   const [calculatedResult, setCalculatedResult] = useState("");
   const [isCalculating, setIsCalculating] = useState(false);
   const [isPro, setIsPro] = useState(false);
+  const [usageCount, setUsageCount] = useState(
+  Number(localStorage.getItem("usageCount")) || 0);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -61,6 +63,11 @@ export default function App() {
     const wealthDigits = getWealthDigits(dayMaster);
     const supportDigits = getSupportDigits(dayMaster);
     const generated = [];
+
+    if (!isPro && usageCount >= 3) {
+      setInsight("Free limit reached. Upgrade to PRO for unlimited access.");
+      return;
+    }
 
     function getRandomDigit() {
       return Math.floor(Math.random() * 10).toString();
@@ -122,6 +129,12 @@ export default function App() {
     setResults(generated.slice(0, isPro ? 10 : 5));
     setSignal(signalText);
     setInsight(insightText);
+
+    if (!isPro) {
+      const newCount = usageCount + 1;
+      setUsageCount(newCount);
+      localStorage.setItem("usageCount", newCount);
+    }
   }
 
 async function calculateDayMaster() {
@@ -279,6 +292,16 @@ async function calculateDayMaster() {
           >
             {isPro ? "Disable PRO" : "Test PRO"}
           </button>
+        </div>
+
+        <div style={{
+          marginBottom: "12px",
+          fontSize: "12px",
+          color: "#aaa"
+        }}>
+          {isPro
+            ? "Unlimited access enabled"
+            : `Free uses left: ${3 - usageCount}`}
         </div>
 
         <div style={{
