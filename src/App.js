@@ -17,6 +17,7 @@ export default function App() {
   const [isPro, setIsPro] = useState(false);
   const [usageCount, setUsageCount] = useState(
   Number(localStorage.getItem("usageCount")) || 0);
+  const [showPricing, setShowPricing] = useState(false);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -702,13 +703,153 @@ async function calculateDayMaster() {
               style={{
                 fontSize: "13px",
                 lineHeight: "1.6",
-                color: "#cfcfcf"
+                color: "#cfcfcf",
+                marginBottom: "12px"
               }}
             >
               Unlock more numbers, stronger-day guidance, premium signal interpretation,
               and deeper profile-based analysis.
             </div>
+
+            <button
+              onClick={() => setShowPricing(true)}
+              style={{
+                padding: "12px 16px",
+                borderRadius: "10px",
+                border: "none",
+                background: "linear-gradient(135deg, #f3d36b, #c9a227)",
+                color: "#111",
+                fontWeight: "bold",
+                cursor: "pointer"
+              }}
+            >
+              View Pricing
+            </button>
           </div>
+
+          {showPricing && (
+            <div
+              style={{
+                marginTop: "18px",
+                padding: "16px",
+                background: "#141414",
+                borderRadius: "16px",
+                border: "1px solid #222"
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  marginBottom: "14px",
+                  textAlign: "center"
+                }}
+              >
+                Choose Your Access
+              </div>
+
+              <div
+                style={{
+                  padding: "14px",
+                  borderRadius: "12px",
+                  background: "#1d1d1d",
+                  marginBottom: "12px",
+                  border: "1px solid #2a2a2a"
+                }}
+              >
+                <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
+                  Free
+                </div>
+                <div style={{ fontSize: "13px", lineHeight: "1.6", color: "#d0d0d0" }}>
+                  • 3 uses per day<br />
+                  • 5 suggested numbers<br />
+                  • Basic signal and insight
+                </div>
+              </div>
+
+              <div
+                style={{
+                  padding: "14px",
+                  borderRadius: "12px",
+                  background: "#221b0d",
+                  marginBottom: "12px",
+                  border: "1px solid rgba(201,162,39,0.35)"
+                }}
+              >
+                {/* PRICE */}
+                <div style={{ fontWeight: "bold", marginBottom: "8px", color: "#f3d36b" }}>
+                  PRO — <span style={{ textDecoration: "line-through", opacity: 0.6 }}>RM18</span> RM8 / month
+                </div>
+
+                {/* INTRO LABEL */}
+                <div style={{
+                  fontSize: "11px",
+                  color: "#c9a227",
+                  marginTop: "4px"
+                }}>
+                  🎉 Intro Offer (Limited Time)
+                </div>
+
+                {/* FEATURES */}
+                <div style={{ fontSize: "13px", lineHeight: "1.6", color: "#f3f3f3" }}>
+                  • Unlimited access<br />
+                  • 10 suggested numbers<br />
+                  • Stronger-day guidance<br />
+                  • Advanced profile-based insights
+                </div>
+
+                <div style={{
+                  marginTop: "8px",
+                  fontSize: "12px",
+                  color: "#f3d36b"
+                }}>
+                  🔥 Locked in at RM8 for early users
+                </div>
+
+                
+                {/* SCARCITY LINE */}
+                <div style={{
+                  fontSize: "11px",
+                  color: "#aaa",
+                  marginTop: "6px"
+                }}>
+                  Early access pricing. Will revert to RM18 soon.
+                </div>
+              </div>
+
+              <button
+                onClick={() => window.open("https://wa.me/60129989149", "_blank")}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  border: "none",
+                  background: "linear-gradient(135deg, #f3d36b, #c9a227)",
+                  color: "#111",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  marginBottom: "10px"
+                }}
+              >
+                Upgrade Now
+              </button>
+
+              <button
+                onClick={() => setShowPricing(false)}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  border: "1px solid #333",
+                  background: "#1a1a1a",
+                  color: "white",
+                  cursor: "pointer"
+                }}
+              >
+                Close
+              </button>
+            </div>
+          )}
 
       </div>
     </div>
