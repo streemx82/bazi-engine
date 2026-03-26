@@ -14,7 +14,7 @@ export default function App() {
   const [sex, setSex] = useState("M");
   const [calculatedResult, setCalculatedResult] = useState("");
   const [isCalculating, setIsCalculating] = useState(false);
-  const [isPro, setIsPro] = useState(false);
+  const [isPro] = useState(false);
   const [usageCount, setUsageCount] = useState(
   Number(localStorage.getItem("usageCount")) || 0);
   const [showPricing, setShowPricing] = useState(false);
@@ -274,7 +274,7 @@ async function calculateDayMaster() {
             >
               PLAN
             </div>
-            
+
             <div style={{ fontSize: "15px", fontWeight: "bold" }}>
               {isPro ? "PRO Access" : "Free Plan"}
             </div>
