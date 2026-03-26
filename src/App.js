@@ -121,13 +121,13 @@ export default function App() {
     let insightText = "";
     if (signalText.includes("STRONG")) {
       insightText =
-        "Favorable alignment detected. Strong pattern clustering and wealth element support indicate higher probability today.";
+        "Aura Core™ indicates favorable alignment detected. Strong pattern clustering and wealth element support indicate higher probability today.";
     } else if (signalText.includes("MODERATE")) {
       insightText =
-        "Stable alignment observed. Some wealth signals are present but not dominant. Consider controlled play.";
+        "Aura Core™ indicates stable alignment observed. Some wealth signals are present but not dominant. Consider controlled play.";
     } else {
       insightText =
-        "Weak pattern structure detected. Low alignment with wealth element. Better to conserve capital today.";
+        "Aura Core™ indicates weak pattern structure detected. Low alignment with wealth element. Better to conserve capital today.";
     }
 
     insightText += ` ${highCount} high probability numbers detected in this batch.`;
@@ -564,6 +564,15 @@ async function calculateDayMaster() {
 
           <div style={{
             fontSize: "11px",
+            color: "#c9a227",
+            marginBottom: "4px",
+            letterSpacing: "0.5px"
+          }}>
+            AURA CORE™
+          </div>
+
+          <div style={{
+            fontSize: "11px",
             opacity: 0.7,
             marginBottom: "6px"
           }}>
@@ -583,10 +592,18 @@ async function calculateDayMaster() {
             fontWeight: "bold"
           }}>
             {signal.includes("STRONG")
-              ? "🔥 Peak Alignment Day"
+              ? "🔥 Peak Alignment Day 🔥"
               : signal.includes("MODERATE")
-              ? "⚖️ Stable Flow Day"
-              : "🌑 Low Alignment Day"}
+              ? "⚖️ Stable Flow Day ⚖️"
+              : "🌑 Low Alignment Day 🌑"}
+          </div>
+
+          <div style={{
+            fontSize: "11px",
+            opacity: 0.6,
+            marginTop: "6px"
+          }}>
+            Indicates today's alignment strength based on your profile
           </div>
         </div>
 
