@@ -14,6 +14,7 @@ export default function App() {
   const [sex, setSex] = useState("M");
   const [calculatedResult, setCalculatedResult] = useState("");
   const [isCalculating, setIsCalculating] = useState(false);
+  const [isPro, setIsPro] = useState(false);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -118,7 +119,7 @@ export default function App() {
 
     insightText += ` ${highCount} high probability numbers detected in this batch.`;
 
-    setResults(generated.slice(0, 5));
+    setResults(generated.slice(0, isPro ? 10 : 5));
     setSignal(signalText);
     setInsight(insightText);
   }
@@ -234,6 +235,50 @@ async function calculateDayMaster() {
           }}>
             Align your timing. Enhance your fortune.
           </div>
+        </div>
+
+        <div
+          style={{
+            background: "#141414",
+            padding: "14px",
+            borderRadius: "12px",
+            marginBottom: "15px",
+            border: "1px solid #222",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: "12px",
+                color: "#c9a227",
+                marginBottom: "4px",
+                letterSpacing: "0.5px"
+              }}
+            >
+              PLAN
+            </div>
+            <div style={{ fontSize: "15px", fontWeight: "bold" }}>
+              {isPro ? "PRO Access" : "Free Access"}
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsPro(!isPro)}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "10px",
+              border: "none",
+              background: isPro ? "#333" : "gold",
+              color: isPro ? "white" : "#111",
+              fontWeight: "bold",
+              cursor: "pointer"
+            }}
+          >
+            {isPro ? "Disable PRO" : "Test PRO"}
+          </button>
         </div>
 
         <div style={{
@@ -566,6 +611,82 @@ async function calculateDayMaster() {
               </div>
             </div>
           ))}
+
+          <div
+            style={{
+              marginTop: "18px",
+              padding: "16px",
+              background: "#141414",
+              borderRadius: "16px",
+              border: "1px solid #222"
+            }}
+          >
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: "bold",
+                marginBottom: "8px"
+              }}
+            >
+              {isPro ? "🔓 PRO Analysis" : "🔒 PRO Analysis"}
+            </div>
+
+            {isPro ? (
+              <div
+                style={{
+                  fontSize: "13px",
+                  lineHeight: "1.6",
+                  color: "#d0d0d0"
+                }}
+              >
+                Stronger-day analysis enabled. Extended batch output, deeper profile usage,
+                and premium guidance are active in this mode.
+              </div>
+            ) : (
+              <div
+                style={{
+                  fontSize: "13px",
+                  lineHeight: "1.6",
+                  color: "#d0d0d0"
+                }}
+              >
+                Unlock PRO for more numbers, deeper analysis, and premium insights based on
+                your detected profile.
+              </div>
+            )}
+          </div>
+
+          <div
+            style={{
+              marginTop: "18px",
+              padding: "16px",
+              background: "#141414",
+              borderRadius: "16px",
+              border: "1px solid #222",
+              textAlign: "center"
+            }}
+          >
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: "bold",
+                marginBottom: "8px"
+              }}
+            >
+              🔒 Upgrade to PRO
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                lineHeight: "1.6",
+                color: "#cfcfcf"
+              }}
+            >
+              Unlock more numbers, stronger-day guidance, premium signal interpretation,
+              and deeper profile-based analysis.
+            </div>
+          </div>
+
       </div>
     </div>
   );
