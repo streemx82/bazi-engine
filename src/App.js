@@ -736,7 +736,7 @@ async function calculateDayMaster() {
                   textAlign: "center"
                 }}
               >
-                🔥 Unlock Your Full Fortune Access 🔥
+                🔥 Unlock Your Full Fortune Access
               </div>
 
               <div
@@ -752,9 +752,9 @@ async function calculateDayMaster() {
                   Free
                 </div>
                 <div style={{ fontSize: "13px", lineHeight: "1.6", color: "#d0d0d0" }}>
-                  • 3 uses per day<br />
-                  • 5 suggested numbers<br />
-                  • Basic signal and insight
+                  • Limited daily access (3 uses)<br />
+                  • Standard number suggestions (5 picks)<br />
+                  • Basic signal reading
                 </div>
               </div>
 
@@ -781,12 +781,29 @@ async function calculateDayMaster() {
                   🎉 Intro Offer (Limited Time)
                 </div>
 
+                <div style={{
+                  fontSize: "11px",
+                  color: "#f3d36b",
+                  marginTop: "6px"
+                }}>
+                  ⚡ Most users upgrade after hitting their limit
+                </div>
+
                 {/* FEATURES */}
-                <div style={{ fontSize: "13px", lineHeight: "1.6", color: "#f3f3f3" }}>
-                  • Unlimited access<br />
-                  • 10 suggested numbers<br />
-                  • Stronger-day guidance<br />
-                  • Advanced profile-based insights
+                <div style={{ fontSize: "13px", lineHeight: "1.7", color: "#f3f3f3" }}>
+                  • Unlimited daily generation<br />
+                  • Expanded number combinations (10 picks)<br />
+                  • Strong-day priority filtering<br />
+                  • Advanced BaZi profile alignment<br />
+                  • Enhanced signal accuracy system
+                </div>
+
+                <div style={{
+                  marginTop: "8px",
+                  fontSize: "12px",
+                  color: "#c9a227"
+                }}>
+                  ✨ Designed for serious players only
                 </div>
 
                 <div style={{
@@ -797,7 +814,6 @@ async function calculateDayMaster() {
                   🔥 Locked in at RM8 for early users
                 </div>
 
-                
                 {/* SCARCITY LINE */}
                 <div style={{
                   fontSize: "11px",
