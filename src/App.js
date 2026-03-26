@@ -275,42 +275,26 @@ async function calculateDayMaster() {
               PLAN
             </div>
             <div style={{ fontSize: "15px", fontWeight: "bold" }}>
-              {isPro ? "PRO Access" : "Free Access"}
+              {isPro ? "PRO Access" : "Free Plan"}
             </div>
           </div>
 
-          <button
-            onClick={() => setIsPro(!isPro)}
-            style={{
-              padding: "10px 14px",
-              borderRadius: "10px",
-              border: "none",
-              background: isPro ? "#333" : "gold",
-              color: isPro ? "white" : "#111",
-              fontWeight: "bold",
-              cursor: "pointer"
-            }}
-          >
-            {isPro ? "Disable PRO" : "Test PRO"}
-          </button>
-        </div>
+          <div style={{
+            fontSize: "11px",
+            color: "#aaa",
+            marginTop: "4px"
+          }}>
+            {isPro
+              ? "Unlimited access unlocked"
+              : "Upgrade to unlock full features"}
+          </div>
 
-        <div style={{
-          marginBottom: "12px",
-          fontSize: "12px",
-          color: "#aaa"
-        }}>
-          {isPro
-            ? "Unlimited access enabled"
-            : `Free uses left: ${3 - usageCount}`}
-        </div>
-
-        <div style={{
-          background: "#141414",
-          padding: "15px",
-          borderRadius: "12px",
-          marginBottom: "15px"
-        }}>
+          <div style={{
+            background: "#141414",
+            padding: "15px",
+            borderRadius: "12px",
+            marginBottom: "15px"
+          }}>
           <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
             Choose Mode
           </div>
