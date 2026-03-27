@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function App() {
   const [dayMaster, setDayMaster] = useState(
@@ -261,6 +261,16 @@ async function calculateDayMaster() {
     localStorage.setItem("isPro", "true");
     setIsPro(true);
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const unlockKey = params.get("unlock");
+
+    if (unlockKey === "pro123") {
+      localStorage.setItem("isPro", "true");
+      setIsPro(true);
+    }
+  }, []);
 
   return (
     <div
@@ -586,43 +596,6 @@ async function calculateDayMaster() {
           }}
         >
           Generate Lucky Numbers
-        </button>
-
-        {/* 👇 TEST BUTTONS */}
-        <button
-          onClick={unlockPro}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "10px",
-            border: "none",
-            background: "gold",
-            color: "#111",
-            fontWeight: "bold",
-            cursor: "pointer",
-            marginTop: "10px"
-          }}
-        >
-          🔓 Unlock PRO (Test)
-        </button>
-
-        <button
-          onClick={() => {
-            localStorage.removeItem("isPro");
-            setIsPro(false);
-          }}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "10px",
-            border: "1px solid #333",
-            background: "#1a1a1a",
-            color: "white",
-            cursor: "pointer",
-            marginTop: "10px"
-          }}
-        >
-          Reset PRO
         </button>
 
         <div style={{
@@ -1012,7 +985,7 @@ async function calculateDayMaster() {
               </div>
 
               <button
-                onClick={() => window.open("https://wa.me/60129989149", "_blank")}
+                onClick={() => window.open("https://wa.me/60129989149?text=Hi%20I%20want%20to%20unlock%20Aura%20Luck%20PRO%20(RM8%20intro%20offer)", "_blank")}
                 style={{
                   width: "100%",
                   padding: "12px",
