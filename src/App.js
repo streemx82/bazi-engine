@@ -283,10 +283,6 @@ async function calculateDayMaster() {
           margin: "0 auto"
         }}
       >
-        <div style={{ color: "white", marginBottom: "10px" }}>
-          PRO status: {isPro ? "TRUE" : "FALSE"}
-        </div>
-
         <div style={{ textAlign: "center", marginBottom: "24px" }}>
           <div style={{
             fontSize: "11px",
