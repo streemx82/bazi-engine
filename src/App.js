@@ -250,6 +250,12 @@ async function calculateDayMaster() {
     return "🌑 Weak Alignment";
   }
 
+  function getRankLabel(index) {
+    if (index < 2) return "⭐ Top Pick";
+    if (index < 4) return "✨ Secondary";
+    return "🪶 Backup";
+  }
+
   return (
     <div
       style={{
@@ -718,7 +724,7 @@ async function calculateDayMaster() {
 
                 <div style={{
                   fontSize: "11px",
-                  opacity: 0.7,
+                  opacity: 0.8,
                   marginTop: "3px"
                 }}>
                   Aligned with today's strongest energy
@@ -726,13 +732,27 @@ async function calculateDayMaster() {
               </div>
 
               <div style={{
-                fontSize: "12px",
-                fontWeight: "bold",
-                padding: "6px 10px",
-                borderRadius: "999px",
-                background: "rgba(255,255,255,0.1)"
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+                gap: "6px"
               }}>
-                {getLevelLabel(r.level)}
+                <div style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "6px 10px",
+                  borderRadius: "999px",
+                  background: "rgba(255,255,255,0.1)"
+                }}>
+                  {getLevelLabel(r.level)}
+                </div>
+
+                <div style={{
+                  fontSize: "11px",
+                  opacity: 0.85
+                }}>
+                  {getRankLabel(i)}
+                </div>
               </div>
             </div>
           ))}
