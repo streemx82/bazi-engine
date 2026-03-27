@@ -250,11 +250,11 @@ async function calculateDayMaster() {
     return "🌑 Weak Alignment";
   }
 
-  function getRankLabel(index) {
-    if (index < 2) return "⭐ Top Pick";
-    if (index < 4) return "✨ Secondary";
-    return "🪶 Backup";
-  }
+  function getRankLabel(level) {
+  if (level === "high") return "⭐ Top Pick";
+  if (level === "medium") return "✨ Secondary";
+  return "🪶 Backup";
+}
 
   return (
     <div
@@ -751,7 +751,7 @@ async function calculateDayMaster() {
                   fontSize: "11px",
                   opacity: 0.85
                 }}>
-                  {getRankLabel(i)}
+                  {getRankLabel(r.level)}
                 </div>
               </div>
             </div>
