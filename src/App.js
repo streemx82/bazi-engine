@@ -278,6 +278,10 @@ async function calculateDayMaster() {
           margin: "0 auto"
         }}
       >
+        <div style={{ color: "white", marginBottom: "10px" }}>
+          PRO status: {isPro ? "TRUE" : "FALSE"}
+        </div>
+
         <div style={{ textAlign: "center", marginBottom: "24px" }}>
           <div style={{
             fontSize: "11px",
@@ -582,6 +586,43 @@ async function calculateDayMaster() {
           }}
         >
           Generate Lucky Numbers
+        </button>
+
+        {/* 👇 TEST BUTTONS */}
+        <button
+          onClick={unlockPro}
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "10px",
+            border: "none",
+            background: "gold",
+            color: "#111",
+            fontWeight: "bold",
+            cursor: "pointer",
+            marginTop: "10px"
+          }}
+        >
+          🔓 Unlock PRO (Test)
+        </button>
+
+        <button
+          onClick={() => {
+            localStorage.removeItem("isPro");
+            setIsPro(false);
+          }}
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "10px",
+            border: "1px solid #333",
+            background: "#1a1a1a",
+            color: "white",
+            cursor: "pointer",
+            marginTop: "10px"
+          }}
+        >
+          Reset PRO
         </button>
 
         <div style={{
@@ -1001,14 +1042,8 @@ async function calculateDayMaster() {
               >
                 Close
               </button>
-
-              <button onClick={unlockPro}>
-                🔓 Unlock PRO (Test)
-              </button>
-
             </div>
           )}
-
       </div>
     </div>
   );
