@@ -257,11 +257,6 @@ async function calculateDayMaster() {
     return "🪶 Backup";
   }
 
-  function unlockPro() {
-    localStorage.setItem("isPro", "true");
-    setIsPro(true);
-  }
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const unlockKey = params.get("unlock");
