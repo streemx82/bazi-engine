@@ -725,9 +725,8 @@ async function calculateDayMaster() {
                   ? "1px solid rgba(46, 204, 113, 0.5)"
                   : "1px solid rgba(255,255,255,0.06)",
               display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            border: "1px solid rgba(255,255,255,0.06)"
+              justifyContent: "space-between",
+              alignItems: "center"
               }}
             >
               <div>
