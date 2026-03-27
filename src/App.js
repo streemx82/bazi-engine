@@ -14,9 +14,10 @@ export default function App() {
   const [sex, setSex] = useState("M");
   const [calculatedResult, setCalculatedResult] = useState("");
   const [isCalculating, setIsCalculating] = useState(false);
-  const [isPro] = useState(false);
+  const [isPro, setIsPro] = useState(
+    localStorage.getItem("isPro") === "true");
   const [usageCount, setUsageCount] = useState(
-  Number(localStorage.getItem("usageCount")) || 0);
+    Number(localStorage.getItem("usageCount")) || 0);
   const [showPricing, setShowPricing] = useState(false);
   const [auraScore, setAuraScore] = useState(null);
   const [luckyHours, setLuckyHours] = useState([]);
@@ -251,10 +252,15 @@ async function calculateDayMaster() {
   }
 
   function getRankLabel(level) {
-  if (level === "high") return "⭐ Top Pick";
-  if (level === "medium") return "✨ Secondary";
-  return "🪶 Backup";
-}
+    if (level === "high") return "⭐ Top Pick";
+    if (level === "medium") return "✨ Secondary";
+    return "🪶 Backup";
+  }
+
+  function unlockPro() {
+    localStorage.setItem("isPro", "true");
+    setIsPro(true);
+  }
 
   return (
     <div
@@ -704,10 +710,20 @@ async function calculateDayMaster() {
               borderRadius: "14px",
               background:
                 r.level === "high"
-                  ? "#123d2b"
+                  ? "linear-gradient(135deg, #1f5c3f, #123d2b)"
                   : r.level === "medium"
                   ? "#5a4310"
                   : "#4a1f26",
+
+              boxShadow:
+                r.level === "high"
+                  ? "0 0 15px rgba(46, 204, 113, 0.4)"
+                  : "none",
+
+              border:
+                r.level === "high"
+                  ? "1px solid rgba(46, 204, 113, 0.5)"
+                  : "1px solid rgba(255,255,255,0.06)",
               display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -986,6 +1002,11 @@ async function calculateDayMaster() {
               >
                 Close
               </button>
+
+              <button onClick={unlockPro}>
+                🔓 Unlock PRO (Test)
+              </button>
+
             </div>
           )}
 
