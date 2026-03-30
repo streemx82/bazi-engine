@@ -319,14 +319,6 @@ async function calculateDayMaster() {
     return "wood"; // water
   }
 
-  function getPressureElement(dayMaster) {
-    if (dayMaster === "wood") return "metal";
-    if (dayMaster === "fire") return "water";
-    if (dayMaster === "earth") return "wood";
-    if (dayMaster === "metal") return "fire";
-    return "earth"; // water
-  }
-
   function getDayRelation(dayMaster, todayElement) {
     if (todayElement === dayMaster) {
       return {
