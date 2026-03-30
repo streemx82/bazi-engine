@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Solar } from "lunar-javascript";
 
 export default function App() {
   const [dayMaster, setDayMaster] = useState(
@@ -21,6 +22,8 @@ export default function App() {
   const [showPricing, setShowPricing] = useState(false);
   const [auraScore, setAuraScore] = useState(null);
   const [luckyHours, setLuckyHours] = useState([]);
+  const [todayElement, setTodayElement] = useState("");
+  const [dayRelation, setDayRelation] = useState("");
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -67,6 +70,8 @@ export default function App() {
     const wealthDigits = getWealthDigits(dayMaster);
     const supportDigits = getSupportDigits(dayMaster);
     const generated = [];
+    const realTodayElement = getChineseDayElement();
+    const relation = getDayRelation(dayMaster, realTodayElement);
 
     if (!isPro && usageCount === 2) {
       setInsight("You're on your last free use. Consider upgrading to PRO.");
@@ -110,30 +115,50 @@ export default function App() {
         pickSmart();
 
       const level = scoreNumber(num);
-      generated.push({ num, level });
+      const rating = getNumberRating(num, level, wealthDigits, supportDigits);
+
+      generated.push({ num, level, rating });
     }
+
+    generated.sort((a, b) => b.rating - a.rating);
 
     const patternScore = analyzePatterns(generated.map((g) => g.num));
+    const alignmentValue = patternScore * 20 + relation.bonus;
 
-    let signalText = "⚠️ SKIP DAY ⚠️";
-    if (patternScore >= 2) signalText = "🔥 STRONG PLAY DAY 🔥";
-    else if (patternScore === 1) signalText = "⚖️ MODERATE ⚖️";
+    let signalText = "🌑 WEAK ALIGNMENT DAY 🌑";
 
-    let score;
-
-    if (signalText.includes("STRONG")) {
-      score = Math.floor(Math.random() * 15) + 85; // 85–99
-    } else if (signalText.includes("MODERATE")) {
-      score = Math.floor(Math.random() * 20) + 60; // 60–79
-    } else {
-      score = Math.floor(Math.random() * 20) + 30; // 30–49
+    if (relation.type === "pressure") {
+      if (patternScore >= 2) {
+        signalText = "⚖️ STABLE FLOW DAY ⚖️";
+      } else {
+        signalText = "🌑 WEAK ALIGNMENT DAY 🌑";
+      }
+    } else if (alignmentValue >= 50) {
+      signalText = "🔥 PEAK ALIGNMENT DAY 🔥";
+    } else if (alignmentValue >= 20) {
+      signalText = "⚖️ STABLE FLOW DAY ⚖️";
     }
+
+    let baseScore;
+
+    if (signalText.includes("PEAK")) {
+      baseScore = Math.floor(Math.random() * 15) + 70;
+    } else if (signalText.includes("STABLE")) {
+      baseScore = Math.floor(Math.random() * 20) + 50;
+    } else {
+      baseScore = Math.floor(Math.random() * 20) + 25;
+    }
+
+    let score = baseScore + relation.bonus;
+
+    if (score > 99) score = 99;
+    if (score < 20) score = 20;
 
     let hours = [];
 
-    if (signalText.includes("STRONG")) {
+    if (signalText.includes("PEAK")) {
       hours = ["09:00 – 11:00", "13:00 – 15:00", "19:00 – 21:00"];
-    } else if (signalText.includes("MODERATE")) {
+    } else if (signalText.includes("STABLE")) {
       hours = ["11:00 – 13:00", "17:00 – 19:00"];
     } else {
       hours = ["15:00 – 17:00"];
@@ -142,15 +167,16 @@ export default function App() {
     const highCount = generated.filter((g) => g.level === "high").length;
 
     let insightText = "";
-    if (signalText.includes("STRONG")) {
+
+    if (signalText.includes("PEAK")) {
       insightText =
-        "Aura Core™ indicates favorable alignment detected. Strong pattern clustering and wealth element support indicate higher probability today.";
-    } else if (signalText.includes("MODERATE")) {
+        `Aura Core™ indicates strong favourable alignment today. ${relation.label} conditions may improve your overall timing.`;
+    } else if (signalText.includes("STABLE")) {
       insightText =
-        "Aura Core™ indicates stable alignment observed. Some wealth signals are present but not dominant. Consider controlled play.";
+        `Aura Core™ shows balanced conditions today. ${relation.label} influence suggests a more measured approach.`;
     } else {
       insightText =
-        "Aura Core™ indicates weak pattern structure detected. Low alignment with wealth element. Better to conserve capital today.";
+        `Aura Core™ detects weaker conditions today. ${relation.label} influence suggests extra caution.`;
     }
 
     insightText += ` ${highCount} high probability numbers detected in this batch.`;
@@ -159,6 +185,8 @@ export default function App() {
     setSignal(signalText);
     setInsight(insightText);
     setAuraScore(score);
+    setTodayElement(realTodayElement);
+    setDayRelation(relation.label);
     setLuckyHours(hours);
 
     setTimeout(() => {
@@ -251,9 +279,9 @@ async function calculateDayMaster() {
     return "🌑 Weak Alignment";
   }
 
-  function getRankLabel(level) {
-    if (level === "high") return "⭐ Top Pick";
-    if (level === "medium") return "✨ Secondary";
+  function getRankLabel(index) {
+    if (index < 2) return "⭐ Top Pick";
+    if (index < 4) return "✨ Secondary";
     return "🪶 Backup";
   }
 
@@ -266,6 +294,134 @@ async function calculateDayMaster() {
       setIsPro(true);
     }
   }, []);
+
+  function getSupportElement(dayMaster) {
+    if (dayMaster === "wood") return "water";
+    if (dayMaster === "fire") return "wood";
+    if (dayMaster === "earth") return "fire";
+    if (dayMaster === "metal") return "earth";
+    return "metal"; // water
+  }
+
+  function getWealthElement(dayMaster) {
+    if (dayMaster === "wood") return "earth";
+    if (dayMaster === "fire") return "metal";
+    if (dayMaster === "earth") return "water";
+    if (dayMaster === "metal") return "wood";
+    return "fire"; // water
+  }
+
+  function getOutputElement(dayMaster) {
+    if (dayMaster === "wood") return "fire";
+    if (dayMaster === "fire") return "earth";
+    if (dayMaster === "earth") return "metal";
+    if (dayMaster === "metal") return "water";
+    return "wood"; // water
+  }
+
+  function getPressureElement(dayMaster) {
+    if (dayMaster === "wood") return "metal";
+    if (dayMaster === "fire") return "water";
+    if (dayMaster === "earth") return "wood";
+    if (dayMaster === "metal") return "fire";
+    return "earth"; // water
+  }
+
+  function getDayRelation(dayMaster, todayElement) {
+    if (todayElement === dayMaster) {
+      return {
+        type: "companion",
+        label: "Neutral Day",
+        bonus: 0
+      };
+    }
+
+    if (todayElement === getSupportElement(dayMaster)) {
+      return {
+        type: "support",
+        label: "Support Day",
+        bonus: 20
+      };
+    }
+
+    if (todayElement === getWealthElement(dayMaster)) {
+      return {
+        type: "wealth",
+        label: "Opportunity Day",
+        bonus: 20
+      };
+    }
+
+    if (todayElement === getOutputElement(dayMaster)) {
+      return {
+        type: "output",
+        label: "Active Day",
+        bonus: 10
+      };
+    }
+
+    return {
+      type: "pressure",
+      label: "Pressure Day",
+      bonus: -20
+    };
+  }
+
+  function getChineseDayElement() {
+    const now = new Date();
+
+    const solar = Solar.fromYmdHms(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      now.getDate(),
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds()
+    );
+
+    const lunar = solar.getLunar();
+
+    // Day GanZhi, e.g. 甲子 / 丙午 / 辛酉
+    const dayGan = lunar.getDayGan();
+
+    if (["甲", "乙"].includes(dayGan)) return "wood";
+    if (["丙", "丁"].includes(dayGan)) return "fire";
+    if (["戊", "己"].includes(dayGan)) return "earth";
+    if (["庚", "辛"].includes(dayGan)) return "metal";
+    return "water"; // 壬, 癸
+  }
+
+  function getNumberRating(num, level, wealthDigits, supportDigits) {
+    let base = 40;
+
+    if (level === "high") base = 78;
+    else if (level === "medium") base = 58;
+    else base = 35;
+
+    let wealthBonus = 0;
+    let supportBonus = 0;
+    let repeatBonus = 0;
+
+    const digits = num.split("");
+
+    digits.forEach((d) => {
+      if (wealthDigits.includes(d)) wealthBonus += 4;
+      if (supportDigits.includes(d)) supportBonus += 2;
+    });
+
+    const uniqueCount = new Set(digits).size;
+    if (uniqueCount <= 3) repeatBonus += 4; // repeated digits
+    if (digits[0] === digits[1] || digits[2] === digits[3]) repeatBonus += 3;
+
+    const randomBonus = Math.floor(Math.random() * 6); // 0–5
+
+    let rating = base + wealthBonus + supportBonus + repeatBonus + randomBonus;
+
+    if (rating > 99) rating = 99;
+    if (rating < 1) rating = 1;
+
+    return rating;
+  }
 
   return (
     <div
@@ -595,8 +751,8 @@ async function calculateDayMaster() {
           borderRadius: "12px",
           textAlign: "center",
           background:
-            signal.includes("STRONG") ? "#123d2b" :
-            signal.includes("MODERATE") ? "#5a4310" :
+            signal.includes("PEAK") ? "#123d2b" :
+            signal.includes("STABLE") ? "#5a4310" :
             "#4a1f26",
           border: "1px solid rgba(255,255,255,0.08)"
         }}>
@@ -630,11 +786,11 @@ async function calculateDayMaster() {
             fontSize: "20px",
             fontWeight: "bold"
           }}>
-            {signal.includes("STRONG")
+            {signal.includes("PEAK")
               ? "🔥 Peak Alignment Day 🔥"
-              : signal.includes("MODERATE")
+              : signal.includes("STABLE")
               ? "⚖️ Stable Flow Day ⚖️"
-              : "🌑 Low Alignment Day 🌑"}
+              : "🌑 Weak Alignment Day 🌑"}
           </div>
 
           {auraScore !== null && (
@@ -655,6 +811,19 @@ async function calculateDayMaster() {
           }}>
             Aura Core™ Score
           </div>
+
+          {todayElement && (
+            <div style={{
+              fontSize: "12px",
+              opacity: 0.8,
+              marginTop: "10px",
+              lineHeight: "1.6"
+            }}>
+              Today's Element: {todayElement.charAt(0).toUpperCase() + todayElement.slice(1)}
+              <br />
+              Relationship: {dayRelation}
+            </div>
+          )}
 
           {luckyHours.length > 0 && (
             <div style={{
@@ -749,6 +918,15 @@ async function calculateDayMaster() {
                 }}>
                   Aligned with today's strongest energy
                 </div>
+
+                <div style={{
+                  fontSize: "11px",
+                  color: "#f3d36b",
+                  marginTop: "4px",
+                  fontWeight: "bold"
+                }}>
+                  Rating: {r.rating}/100
+                </div>
               </div>
 
               <div style={{
@@ -771,10 +949,10 @@ async function calculateDayMaster() {
                   fontSize: "11px",
                   opacity: 0.85
                 }}>
-                  {getRankLabel(r.level)}
+                  {getRankLabel(i)}
                 </div>
               </div>
-            </div>
+           </div>
           ))}
 
           <div
