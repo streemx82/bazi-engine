@@ -34,6 +34,10 @@ export default function App() {
   const [luckyHours, setLuckyHours] = useState([]);
   const [todayElement, setTodayElement] = useState("");
   const [dayRelation, setDayRelation] = useState("");
+  const [bestPick, setBestPick] = useState(null);
+  const [history, setHistory] = useState(() => {
+  const saved = localStorage.getItem("auraHistory");
+    return saved ? JSON.parse(saved) : [];});
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -160,6 +164,22 @@ export default function App() {
     }
 
     generated.sort((a, b) => b.rating - a.rating);
+
+    const topPick = generated[0];
+    setBestPick(topPick);
+
+    const newHistoryItem = {
+      time: new Date().toLocaleString(),
+      bestPick: topPick.num,
+      rating: topPick.rating,
+      score,
+      signal: signalText
+    };
+
+    const updatedHistory = [newHistoryItem, ...history].slice(0, 3);
+
+    setHistory(updatedHistory);
+    localStorage.setItem("auraHistory", JSON.stringify(updatedHistory));
 
     const patternScore = analyzePatterns(generated.map((g) => g.num));
     const alignmentValue = patternScore * 20 + relation.bonus;
@@ -956,6 +976,102 @@ async function calculateDayMaster() {
                   marginTop: "2px"
                 }}>
                   {h}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {bestPick && (
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "16px",
+                borderRadius: "14px",
+                background: "linear-gradient(135deg, #2c2c2c, #111)",
+                border: "1px solid rgba(243, 211, 107, 0.4)",
+                textAlign: "center"
+              }}
+            >
+              <div style={{
+                fontSize: "12px",
+                color: "#c9a227",
+                marginBottom: "6px",
+                letterSpacing: "1px"
+              }}>
+                🎯 BEST PICK TODAY
+              </div>
+
+              <div style={{
+                fontSize: "28px",
+                fontWeight: "bold",
+                color: "#f3d36b"
+              }}>
+                {bestPick.num}
+              </div>
+
+              <div style={{
+                fontSize: "12px",
+                marginTop: "6px",
+                opacity: 0.8
+              }}>
+                Rating: {bestPick.rating}/100
+              </div>
+
+              <div style={{
+                fontSize: "11px",
+                marginTop: "8px",
+                opacity: 0.7
+              }}>
+                Best Window: {luckyHours[0]}
+              </div>
+            </div>
+          )}
+
+          {history.length > 0 && (
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "16px",
+                borderRadius: "14px",
+                background: "#141414",
+                border: "1px solid #222"
+              }}
+            >
+              <div style={{
+                fontSize: "12px",
+                color: "#c9a227",
+                marginBottom: "10px",
+                letterSpacing: "1px"
+              }}>
+                RECENT HISTORY
+              </div>
+
+              {history.map((item, index) => (
+                <div
+                  key={index}
+                  style={{
+                    padding: "10px 0",
+                    borderTop: index === 0 ? "none" : "1px solid rgba(255,255,255,0.08)"
+                  }}
+                >
+                  <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    {item.bestPick}
+                  </div>
+
+                  <div style={{
+                    fontSize: "11px",
+                    opacity: 0.75,
+                    marginTop: "4px",
+                    lineHeight: "1.5"
+                  }}>
+                    Rating: {item.rating}/100
+                    <br />
+                    Aura Score: {item.score}/100
+                    <br />
+                    {item.signal}
+                    <br />
+                    {item.time}
+                  </div>
                 </div>
               ))}
             </div>
