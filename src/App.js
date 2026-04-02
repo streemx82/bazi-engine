@@ -17,13 +17,23 @@ export default function App() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [isPro, setIsPro] = useState(
     localStorage.getItem("isPro") === "true");
-  const [usageCount, setUsageCount] = useState(
-    Number(localStorage.getItem("usageCount")) || 0);
+  const [usageCount, setUsageCount] = useState(() => {
+  const savedDate = localStorage.getItem("usageDate");
+  const savedCount = Number(localStorage.getItem("usageCount")) || 0;
+        if (savedDate !== todayKey) {
+          localStorage.setItem("usageDate", todayKey);
+          localStorage.setItem("usageCount", "0");
+          return 0;
+        }
+
+        return savedCount;
+      });
   const [showPricing, setShowPricing] = useState(false);
   const [auraScore, setAuraScore] = useState(null);
   const [luckyHours, setLuckyHours] = useState([]);
   const [todayElement, setTodayElement] = useState("");
   const [dayRelation, setDayRelation] = useState("");
+  const todayKey = new Date().toISOString().split("T")[0];
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -115,7 +125,14 @@ export default function App() {
         pickSmart();
 
       const level = scoreNumber(num);
-      const rating = getNumberRating(num, level, wealthDigits, supportDigits);
+      const rating = getNumberRating(
+        num,
+        level,
+        wealthDigits,
+        supportDigits,
+        relation,
+        realTodayElement
+      );
 
       generated.push({ num, level, rating });
     }
@@ -198,7 +215,8 @@ export default function App() {
     if (!isPro) {
       const newCount = usageCount + 1;
       setUsageCount(newCount);
-      localStorage.setItem("usageCount", newCount);
+      localStorage.setItem("usageCount", newCount.toString());
+      localStorage.setItem("usageDate", todayKey);
     }
   }
 
@@ -383,7 +401,14 @@ async function calculateDayMaster() {
     return "water"; // 壬, 癸
   }
 
-  function getNumberRating(num, level, wealthDigits, supportDigits) {
+  function getNumberRating(
+    num,
+    level,
+    wealthDigits,
+    supportDigits,
+    relation,
+    todayElement
+  ) {
     let base = 40;
 
     if (level === "high") base = 78;
@@ -393,27 +418,70 @@ async function calculateDayMaster() {
     let wealthBonus = 0;
     let supportBonus = 0;
     let repeatBonus = 0;
+    let relationBonus = 0;
+    let resonanceBonus = 0;
 
     const digits = num.split("");
+    const resonanceDigits = getElementResonanceDigits(todayElement);
 
     digits.forEach((d) => {
       if (wealthDigits.includes(d)) wealthBonus += 4;
       if (supportDigits.includes(d)) supportBonus += 2;
+      if (resonanceDigits.includes(d)) resonanceBonus += 2;
     });
 
     const uniqueCount = new Set(digits).size;
-    if (uniqueCount <= 3) repeatBonus += 4; // repeated digits
+    if (uniqueCount <= 3) repeatBonus += 4;
     if (digits[0] === digits[1] || digits[2] === digits[3]) repeatBonus += 3;
 
-    const randomBonus = Math.floor(Math.random() * 6); // 0–5
+    if (relation.type === "support") relationBonus = 6;
+    else if (relation.type === "wealth") relationBonus = 6;
+    else if (relation.type === "output") relationBonus = 3;
+    else if (relation.type === "pressure") relationBonus = -6;
 
-    let rating = base + wealthBonus + supportBonus + repeatBonus + randomBonus;
+    const randomBonus = Math.floor(Math.random() * 6);
+
+    let rating =
+      base +
+      wealthBonus +
+      supportBonus +
+      repeatBonus +
+      relationBonus +
+      resonanceBonus +
+      randomBonus;
 
     if (rating > 99) rating = 99;
     if (rating < 1) rating = 1;
 
     return rating;
   }
+
+  function getElementResonanceDigits(element) {
+    if (element === "water") return ["1"];
+    if (element === "wood") return ["3", "4"];
+    if (element === "fire") return ["9"];
+    if (element === "earth") return ["2", "5", "8"];
+    if (element === "metal") return ["6", "7"];
+    return [];
+  }
+
+  function getPersonalPowerDigits(dayMaster) {
+    const wealthDigits = getWealthDigits(dayMaster);
+    const supportDigits = getSupportDigits(dayMaster);
+
+    // combine and remove duplicates
+    return [...new Set([...wealthDigits, ...supportDigits])];
+  }
+
+  useEffect(() => {
+  const savedDate = localStorage.getItem("usageDate");
+
+  if (savedDate !== todayKey) {
+      localStorage.setItem("usageDate", todayKey);
+      localStorage.setItem("usageCount", "0");
+      setUsageCount(0);
+    }
+  }, [todayKey]);
 
   return (
     <div
@@ -816,6 +884,22 @@ async function calculateDayMaster() {
               Relationship: {dayRelation}
             </div>
           )}
+
+          <div style={{
+            fontSize: "11px",
+            opacity: 0.7,
+            marginTop: "6px"
+          }}>
+            Resonance Digits: {getElementResonanceDigits(todayElement).join(", ")}
+          </div>
+
+          <div style={{
+            fontSize: "11px",
+            opacity: 0.7,
+            marginTop: "6px"
+          }}>
+            Power Digits: {getPersonalPowerDigits(dayMaster).join(", ")}
+          </div>
 
           {luckyHours.length > 0 && (
             <div style={{
