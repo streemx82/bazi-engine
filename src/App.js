@@ -534,8 +534,7 @@ async function calculateDayMaster() {
             marginBottom: "15px",
             border: "1px solid #222",
             display: "block"
-          }}
-        >
+          }}>
 
             <div
               style={{
@@ -552,16 +551,26 @@ async function calculateDayMaster() {
               {isPro ? "PRO Access" : "Free Plan"}
             </div>
 
-          <div style={{
-            fontSize: "11px",
-            color: "#aaa",
-            marginTop: "4px"
+            <div style={{
+              fontSize: "11px",
+              color: "#aaa",
+              marginTop: "4px"
+            }}>
+              {isPro
+                ? "Unlimited access unlocked"
+                : "Upgrade to unlock full features"}
+            </div>
+        </div>
+
+        <div style={{
+            marginBottom: "12px",
+            fontSize: "12px",
+            color: "#aaa"
           }}>
             {isPro
-              ? "Unlimited access unlocked"
-              : "Upgrade to unlock full features"}
+              ? "Unlimited access enabled"
+              : `Free uses left: ${Math.max(0, 3 - usageCount)}`}
           </div>
-        </div>
 
           <div style={{
             background: "#141414",
