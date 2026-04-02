@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Solar } from "lunar-javascript";
 
 export default function App() {
+  const todayKey = new Date().toISOString().split("T")[0];
   const [dayMaster, setDayMaster] = useState(
     localStorage.getItem("dayMaster") || "wood"
   );
@@ -18,22 +19,21 @@ export default function App() {
   const [isPro, setIsPro] = useState(
     localStorage.getItem("isPro") === "true");
   const [usageCount, setUsageCount] = useState(() => {
-  const savedDate = localStorage.getItem("usageDate");
-  const savedCount = Number(localStorage.getItem("usageCount")) || 0;
-        if (savedDate !== todayKey) {
-          localStorage.setItem("usageDate", todayKey);
-          localStorage.setItem("usageCount", "0");
-          return 0;
-        }
+    const savedDate = localStorage.getItem("usageDate");
+    const savedCount = Number(localStorage.getItem("usageCount")) || 0;
+          if (savedDate !== todayKey) {
+            localStorage.setItem("usageDate", todayKey);
+            localStorage.setItem("usageCount", "0");
+            return 0;
+          }
 
-        return savedCount;
-      });
+          return savedCount;
+        });
   const [showPricing, setShowPricing] = useState(false);
   const [auraScore, setAuraScore] = useState(null);
   const [luckyHours, setLuckyHours] = useState([]);
   const [todayElement, setTodayElement] = useState("");
   const [dayRelation, setDayRelation] = useState("");
-  const todayKey = new Date().toISOString().split("T")[0];
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -474,14 +474,15 @@ async function calculateDayMaster() {
   }
 
   useEffect(() => {
-  const savedDate = localStorage.getItem("usageDate");
+    const currentTodayKey = new Date().toISOString().split("T")[0];
+    const savedDate = localStorage.getItem("usageDate");
 
-  if (savedDate !== todayKey) {
-      localStorage.setItem("usageDate", todayKey);
+    if (savedDate !== currentTodayKey) {
+      localStorage.setItem("usageDate", currentTodayKey);
       localStorage.setItem("usageCount", "0");
       setUsageCount(0);
     }
-  }, [todayKey]);
+  }, []);
 
   return (
     <div
