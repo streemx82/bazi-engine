@@ -119,6 +119,7 @@ export default function App() {
 
     let generated = [];
     const usedNumbers = new Set();
+    const endingCount = {};
     let attempts = 0;
 
     while (generated.length < 20 && attempts < 200) {
@@ -131,6 +132,18 @@ export default function App() {
         pickSmart();
 
       if (usedNumbers.has(num)) continue;
+
+      // 👇 NEW: control ending pattern
+      const ending = num.slice(-2); // last 2 digits
+
+      if (!endingCount[ending]) {
+        endingCount[ending] = 0;
+      }
+
+      // ❌ if same ending appears too often, skip
+      if (endingCount[ending] >= 3) continue;
+
+      endingCount[ending]++;
 
       usedNumbers.add(num);
 
