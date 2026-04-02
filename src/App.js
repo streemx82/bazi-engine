@@ -79,7 +79,6 @@ export default function App() {
   function generate() {
     const wealthDigits = getWealthDigits(dayMaster);
     const supportDigits = getSupportDigits(dayMaster);
-    const generated = [];
     const realTodayElement = getChineseDayElement();
     const relation = getDayRelation(dayMaster, realTodayElement);
 
