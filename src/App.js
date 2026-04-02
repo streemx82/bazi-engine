@@ -117,12 +117,22 @@ export default function App() {
       return "low";
     }
 
-    for (let i = 0; i < 20; i++) {
+    let generated = [];
+    const usedNumbers = new Set();
+    let attempts = 0;
+
+    while (generated.length < 20 && attempts < 200) {
+      attempts++;
+
       const num =
         pickSmart() +
         pickSmart() +
         pickSmart() +
         pickSmart();
+
+      if (usedNumbers.has(num)) continue;
+
+      usedNumbers.add(num);
 
       const level = scoreNumber(num);
       const rating = getNumberRating(
