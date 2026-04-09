@@ -38,6 +38,7 @@ export default function App() {
   const [history, setHistory] = useState(() => {
   const saved = localStorage.getItem("auraHistory");
     return saved ? JSON.parse(saved) : [];});
+  const [echoNumber, setEchoNumber] = useState(null);
 
   function getWealthDigits(type) {
     if (type === "wood") return ["2", "5", "8"];
@@ -260,6 +261,22 @@ export default function App() {
 
     setHistory(updatedHistory);
     localStorage.setItem("auraHistory", JSON.stringify(updatedHistory));
+
+    const countMap = {};
+
+    updatedHistory.forEach((item) => {
+      countMap[item.bestPick] = (countMap[item.bestPick] || 0) + 1;
+    });
+
+    let detectedEcho = null;
+
+    Object.keys(countMap).forEach((num) => {
+      if (countMap[num] >= 2) {
+        detectedEcho = num;
+      }
+    });
+
+    setEchoNumber(detectedEcho);
   }
 
 async function calculateDayMaster() {
@@ -1023,6 +1040,45 @@ async function calculateDayMaster() {
                 opacity: 0.7
               }}>
                 Best Window: {luckyHours[0]}
+              </div>
+            </div>
+          )}
+
+          {echoNumber && (
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "14px",
+                borderRadius: "14px",
+                background: "linear-gradient(135deg, #2a1f0c, #16120a)",
+                border: "1px solid rgba(243, 211, 107, 0.35)",
+                textAlign: "center"
+              }}
+            >
+              <div style={{
+                fontSize: "12px",
+                color: "#c9a227",
+                marginBottom: "6px",
+                letterSpacing: "1px"
+              }}>
+                ✨ ECHO NUMBER DETECTED
+              </div>
+
+              <div style={{
+                fontSize: "26px",
+                fontWeight: "bold",
+                color: "#f3d36b"
+              }}>
+                {echoNumber}
+              </div>
+
+              <div style={{
+                fontSize: "11px",
+                opacity: 0.75,
+                marginTop: "6px",
+                lineHeight: "1.5"
+              }}>
+                This number has repeated across recent strong outputs.
               </div>
             </div>
           )}
