@@ -168,19 +168,6 @@ export default function App() {
     const topPick = generated[0];
     setBestPick(topPick);
 
-    const newHistoryItem = {
-      time: new Date().toLocaleString(),
-      bestPick: topPick.num,
-      rating: topPick.rating,
-      score,
-      signal: signalText
-    };
-
-    const updatedHistory = [newHistoryItem, ...history].slice(0, 3);
-
-    setHistory(updatedHistory);
-    localStorage.setItem("auraHistory", JSON.stringify(updatedHistory));
-
     const patternScore = analyzePatterns(generated.map((g) => g.num));
     const alignmentValue = patternScore * 20 + relation.bonus;
 
@@ -260,6 +247,19 @@ export default function App() {
       localStorage.setItem("usageCount", newCount.toString());
       localStorage.setItem("usageDate", todayKey);
     }
+
+    const newHistoryItem = {
+      time: new Date().toLocaleString(),
+      bestPick: topPick.num,
+      rating: topPick.rating,
+      score,
+      signal: signalText
+    };
+
+    const updatedHistory = [newHistoryItem, ...history].slice(0, 3);
+
+    setHistory(updatedHistory);
+    localStorage.setItem("auraHistory", JSON.stringify(updatedHistory));
   }
 
 async function calculateDayMaster() {
